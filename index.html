@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crush Test</title>
+  <style>
+    /* General Body Style */
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to right, #f06292, #fce4ec);
+      color: #333;
+      text-align: center;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      overflow: hidden;
+      margin: 0;
+      animation: fadeIn 2s ease-out;
+    }
+
+    /* Button Style */
+    button {
+      padding: 15px 30px;
+      margin: 20px;
+      font-size: 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 15px;
+      background-color: #ff4081;
+      color: white;
+      transition: 0.3s ease-in-out;
+    }
+
+    button:hover {
+      background-color: #f50057;
+      transform: scale(1.1);
+    }
+
+    /* Hidden Elements */
+    .hidden {
+      display: none;
+    }
+
+    /* Question and Final Question Styles */
+    #question, #finalQuestion, #result {
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    #question.visible, #finalQuestion.visible, #result.visible {
+      opacity: 1;
+    }
+
+    /* Animation for "No" Button */
+    #no {
+      position: relative;
+      transition: 0.5s;
+    }
+
+    #no:hover {
+      position: absolute;
+      top: randomPosition();
+      left: randomPosition();
+      transition: all 1s ease;
+    }
+
+    /* Fancy Animation on Page Load */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Background Image (optional) */
+    .background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://www.transparenttextures.com/patterns/abstract.png') repeat;
+      z-index: -1;
+      opacity: 0.1;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Background Pattern -->
+  <div class="background"></div>
+
+  <h1>Do You Like Me?</h1>
+  <p>Let's find out in a fun way!</p>
+
+  <button onclick="askQuestion()">Start</button>
+
+  <div id="question" class="hidden">
+    <p>How often do we talk?</p>
+    <button onclick="nextQuestion()">Every day</button>
+    <button onclick="nextQuestion()">Sometimes</button>
+    <button onclick="nextQuestion()">Rarely</button>
+  </div>
+
+  <div id="finalQuestion" class="hidden">
+    <p>Would you like to go out with me?</p>
+    <button id="yes" onclick="showResult()">Yes</button>
+    <button id="no" onclick="runAway()">No</button>
+  </div>
+
+  <div id="result" class="hidden">
+    <p>Congratulations! You and Meshach are now dating!</p>
+  </div>
+
+  <script>
+    let yesSound = new Audio('https://www.soundjay.com/button/beep-07.wav'); // Optional: sound for "Yes"
+    let noSound = new Audio('https://www.soundjay.com/button/beep-10.wav');  // Optional: sound for "No"
+
+    // Function to ask the first question
+    function askQuestion() {
+      document.querySelector('button').classList.add('hidden');
+      document.getElementById('question').classList.remove('hidden');
+      setTimeout(() => {
+        document.getElementById('question').classList.add('visible');
+      }, 100);
+    }
+
+    // Move to next question
+    function nextQuestion() {
+      document.getElementById('question').classList.remove('visible');
+      setTimeout(() => {
+        document.getElementById('question').classList.add('hidden');
+        document.getElementById('finalQuestion').classList.remove('hidden');
+        setTimeout(() => {
+          document.getElementById('finalQuestion').classList.add('visible');
+        }, 100);
+      }, 500);
+    }
+
+    // Make the "No" button run away
+    function runAway() {
+      let noButton = document.getElementById('no');
+      let x = Math.random() * window.innerWidth;
+      let y = Math.random() * window.innerHeight;
+      noButton.style.left = x + 'px';
+      noButton.style.top = y + 'px';
+      noSound.play();  // Play sound when No button is clicked
+    }
+
+    // Show result when "Yes" is clicked
+    function showResult() {
+      yesSound.play();  // Play sound when Yes button is clicked
+      document.getElementById('finalQuestion').classList.remove('visible');
+      document.getElementById('finalQuestion').classList.add('hidden');
+      setTimeout(() => {
+        document.getElementById('result').classList.remove('hidden');
+        setTimeout(() => {
+          document.getElementById('result').classList.add('visible');
+        }, 100);
+      }, 500);
+    }
+  </script>
+
+</body>
+</html>
