@@ -22,6 +22,25 @@
       animation: fadeIn 2s ease-out;
     }
 
+    /* Progress Bar at the Top */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: #f3f3f3;
+      border-radius: 10px;
+      height: 20px;
+      z-index: 1000;
+    }
+
+    .progress-bar span {
+      display: block;
+      height: 100%;
+      background-color: #ff4081;
+      border-radius: 10px;
+      width: 0;
+    }
+
     /* Button Style */
     button {
       padding: 15px 30px;
@@ -55,23 +74,6 @@
 
     #question.visible, #nextQuestion.visible, #finalQuestion.visible, #result.visible {
       opacity: 1;
-    }
-
-    /* Progress Bar */
-    .progress-bar {
-      width: 100%;
-      background-color: #f3f3f3;
-      border-radius: 10px;
-      height: 20px;
-      margin-bottom: 20px;
-    }
-
-    .progress-bar span {
-      display: block;
-      height: 100%;
-      background-color: #ff4081;
-      border-radius: 10px;
-      width: 0;
     }
 
     /* Background Pattern */
@@ -161,19 +163,22 @@
     <button onclick="answerQuestion(0)">No</button>
   </div>
 
+  <div id="flirtyQuestion" class="hidden">
+    <p>Do you ever daydream about kissing them?</p>
+    <button onclick="answerQuestion(2)">All the time! 😘</button>
+    <button onclick="answerQuestion(1)">Sometimes... 😅</button>
+    <button onclick="answerQuestion(0)">Not really...</button>
+  </div>
+
   <div id="finalQuestion" class="hidden">
     <p>Will you be mine?</p>
-    <button id="yes" onclick="showResult()">Yes</button>
-    <button id="no" onmousemove="runAway(event)">No</button>
+    <button id="yes" onclick="showResult()">Yes 😍</button>
+    <button id="no" onmousemove="runAway(event)">No 😢</button>
   </div>
 
   <div id="result" class="hidden">
     <p id="resultMessage"></p>
     <p class="heart">💖</p>
-  </div>
-
-  <div class="progress-bar">
-    <span id="progress"></span>
   </div>
 
   <script>
@@ -205,18 +210,30 @@
     function answerQuestion(points) {
       score += points;
 
-      document.getElementById('question').classList.remove('visible');
-      setTimeout(() => {
-        document.getElementById('question').classList.add('hidden');
-        document.getElementById('nextQuestion').classList.remove('hidden');
+      if (score > 2 && document.getElementById('flirtyQuestion')) {
+        document.getElementById('question').classList.remove('visible');
         setTimeout(() => {
-          document.getElementById('nextQuestion').classList.add('visible');
-        }, 100);
-      }, 500);
-      updateProgress(66);
+          document.getElementById('question').classList.add('hidden');
+          document.getElementById('flirtyQuestion').classList.remove('hidden');
+          setTimeout(() => {
+            document.getElementById('flirtyQuestion').classList.add('visible');
+          }, 100);
+        }, 500);
+        updateProgress(66);
+      } else if (score <= 2) {
+        document.getElementById('question').classList.remove('visible');
+        setTimeout(() => {
+          document.getElementById('question').classList.add('hidden');
+          document.getElementById('nextQuestion').classList.remove('hidden');
+          setTimeout(() => {
+            document.getElementById('nextQuestion').classList.add('visible');
+          }, 100);
+        }, 500);
+        updateProgress(66);
+      }
     }
 
-    // Move to the final question
+    // Move to the final question after answering the second one
     function finalQuestion() {
       document.getElementById('nextQuestion').classList.remove('visible');
       setTimeout(() => {
@@ -252,14 +269,18 @@
       }, 500);
 
       let message;
-      if (score >= 3) {
-        message = "You like them a lot! Maybe it's time to ask them out! 😍";
+      if (score >= 6) {
+        message = "You REALLY like them! 😍 It's time to make your move!";
+      } else if (score == 5) {
+        message = "You're super into them! Maybe it's time to confess! 😊";
+      } else if (score == 4) {
+        message = "You definitely like them, but you're not quite sure yet. 😅";
+      } else if (score == 3) {
+        message = "You seem to have some feelings, but nothing too strong. 🤔";
       } else if (score == 2) {
-        message = "You seem to like them! Maybe give it a shot. 😊";
-      } else if (score == 1) {
-        message = "You might like them a little, but not quite sure. 🤔";
+        message = "You're just friends, and maybe that's a good thing. 😅";
       } else {
-        message = "You don't seem to like them much, but that's okay! 😅";
+        message = "You don't seem to like them that much. 🤷‍♂️";
       }
 
       document.getElementById('resultMessage').textContent = message;
